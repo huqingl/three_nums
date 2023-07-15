@@ -294,8 +294,8 @@ function App() {
     predictDraw(predictNum, sumDiff, "predict-canvas4", "4");
   };
   return (
-    <div className="">
-      <div className="w-fit px-5 flex mx-auto mt-10">
+    <div className="h-screen w-full bg-zinc-200">
+      <div className="w-fit flex mx-auto pt-10">
         <div className="relative">
           {one.map((item, index) => {
             return <Row num={item} bgColor="#991b1b" key={index} />;
