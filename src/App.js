@@ -1,10 +1,10 @@
 import "./App.css";
-// import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useState, useRef } from "react";
 function Square({ dataHasNum, children }) {
   return (
     <div
-      className="square w-6 h-6 flex justify-center items-center"
+      className="square w-5 h-5 flex justify-center items-center"
       data-has-num={dataHasNum}
     >
       {children}
@@ -17,7 +17,7 @@ function PredictSquare({ dataHasNum, children, makeNum }) {
   };
   return (
     <div
-      className="square w-6 h-6 flex justify-center items-center cursor-pointer"
+      className="square w-5 h-5 flex justify-center items-center cursor-pointer"
       data-has-num={dataHasNum}
       onClick={() => setNum(dataHasNum)}
     >
@@ -31,8 +31,8 @@ function Number({ num, bgColor }) {
       className="block w-4 h-4 text-center text-white z-10"
       style={{
         borderRadius: "50%",
-        fontSize: "16px",
-        lineHeight: "1rem",
+        fontSize: "12px",
+        lineHeight: "16px",
         backgroundColor: bgColor,
       }}
     >
@@ -77,68 +77,72 @@ function PredictRow({ num, bgColor, makeNum }) {
 }
 
 function App() {
-  const prev = "285";
-  const data = [
-    "689",
-    "029",
-    "750",
-    "802",
-    "422",
-    "314",
-    "022",
-    "124",
-    "891",
-    "337",
-    "557",
-    "216",
-    "057",
-    "182",
-    "427",
-    "751",
-    "245",
-    "730",
-    "665",
-    "190",
-    "888",
-    "119",
-    "030",
-    "737",
-    "932",
-    "567",
-    "702",
-    "066",
-    "730",
-  ];
-  var one = [],
-    two = [],
-    three = [],
-    sumEnd = [],
-    sumDiff = [];
-  data.map((item, index) => {
-    one.push(parseInt(item.charAt(0)));
-    two.push(parseInt(item.charAt(1)));
-    three.push(parseInt(item.charAt(2)));
-    let sum =
-      parseInt(item.charAt(0)) +
-      parseInt(item.charAt(1)) +
-      parseInt(item.charAt(2));
-    let sumE = parseInt(sum % 10);
-    sumEnd.push(sumE);
-    if (index === 0) {
-      var sumD = Math.abs(
-        sumE -
-          parseInt(
-            (parseInt(prev.charAt(0)) +
-              parseInt(prev.charAt(1)) +
-              parseInt(prev.charAt(2))) %
+  // const [prev, setPrev] = useState('')
+  // const [data, setData] = useState([])
+  const [one, setOne] = useState([])
+  const [two, setTwo] = useState([])
+  const [three, setThree] = useState([])
+  const [sumEnd, setSumEnd] = useState([])
+  const [sumDiff, setSumDiff] = useState([])
+  var oneRef = useRef()
+  // const prevO = useRef("000")
+  // const dataO = useRef(["000","000"])
+  // var prev, data1
+  useEffect(() => {
+    // prev, data1
+    var prev = "000"
+    var one = [],
+      two = [],
+      three = [],
+      sumEnd = [],
+      sumDiff = [];
+    axios.get('https://huqinlong.com/d/houtai/get_history_before.php').then((res) => {
+      prev = res.data[0]
+    })
+    axios.get('https://huqinlong.com/d/houtai/get_history.php').then((res) => {
+      res.data.map((item, index) => {
+        one.push(parseInt(item.charAt(0)));
+        two.push(parseInt(item.charAt(1)));
+        three.push(parseInt(item.charAt(2)));
+        let sum =
+          parseInt(item.charAt(0)) +
+          parseInt(item.charAt(1)) +
+          parseInt(item.charAt(2));
+        let sumE = parseInt(sum % 10);
+        sumEnd.push(sumE);
+        if (index === 0) {
+          var sumD = Math.abs(
+            sumE -
+            parseInt(
+              (parseInt(prev.charAt(0)) +
+                parseInt(prev.charAt(1)) +
+                parseInt(prev.charAt(2))) %
               10
-          )
-      );
-    } else {
-      sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
-    }
-    sumDiff.push(sumD);
-  });
+            )
+          );
+        } else {
+          sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
+        }
+        sumDiff.push(sumD);
+      });
+      setOne(one)
+      oneRef.current = one
+      setTwo(two)
+      setThree(three)
+      setSumEnd(sumEnd)
+      setSumDiff(sumDiff)
+    })
+
+  }, [])
+  // const prev = "557";
+  // const data = ['216', '057', '182', '427', '751', '245', '730', '665', '190', '888', '119', '030', '737', '932', '567', '702', '066', '730', '667'];
+  // var one = [],
+  //   two = [],
+  //   three = [],
+  //   sumEnd = [],
+  //   sumDiff = [];
+
+
   // const one = [0, 3, 8, 4];
   // const two = [9, 4, 1, 5];
   // const three = [3, 1, 2, 7];
@@ -146,50 +150,49 @@ function App() {
   const [oneHeight, setOneHeight] = useState(0);
 
   const Draw = (data, id) => {
+    console.log(data)
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
     cxt.beginPath();
 
     let startNum = data[0];
-    let startX = startNum * 24 + 12;
-    let startY = 12;
+    let startX = startNum * 20 + 10;
+    let startY = 10;
     cxt.moveTo(startX, startY);
     data.map((item, index) => {
       if (index > 0) {
-        let x = item * 24 + 12;
-        let y = index * 24 + 12;
+        let x = item * 20 + 10;
+        let y = index * 20 + 10;
         cxt.lineTo(x, y);
       }
     });
     cxt.stroke();
   };
-  // useEffect(()=>{
-  //   axios.get('/api/caipiao/history?appkey=ca9d0813b12f3338&caipiaoid=12&issueno=&start=0&num=30').then(res=>{
-  //     console.log(res)
-  //   })
-  // },[])
   useEffect(() => {
-    const oneLenth = one.length;
-    const oneWidth = 24 * 10;
-    const oneHeight = 24 * oneLenth;
-    setOneWidth(oneWidth);
-    setOneHeight(oneHeight);
-    Draw(one, "canvas");
-    Draw(two, "canvas1");
-    Draw(three, "canvas2");
-    Draw(sumEnd, "canvas3");
-    Draw(sumDiff, "canvas4");
+    setTimeout(() => {
+      const oneLenth = oneRef.current.length;
+      const oneWidth = 20 * 10;
+      const oneHeight = 20 * oneLenth;
+      setOneWidth(oneWidth);
+      setOneHeight(oneHeight);
+      Draw(one, "canvas");
+      Draw(two, "canvas1");
+      Draw(three, "canvas2");
+      Draw(sumEnd, "canvas3");
+      Draw(sumDiff, "canvas4");
+    },2000)
+
   }, [one]);
   const predictDraw = (predictNum, data, id, No) => {
     //设置连接线所在canvas画布的宽度
     let lastNum = data[data.length - 1];
-    let width = Math.abs(lastNum - predictNum) * 24;
-    let top = oneHeight - 12;
+    let width = Math.abs(lastNum - predictNum) * 20;
+    let top = oneHeight - 10;
     var left;
     if (lastNum < predictNum) {
-      left = lastNum * 24 + 12;
+      left = lastNum * 20 + 10;
     } else {
-      left = predictNum * 24 + 12;
+      left = predictNum * 20 + 10;
     }
     switch (No) {
       case "":
@@ -227,10 +230,10 @@ function App() {
       cxt.beginPath();
       if (lastNum < predictNum) {
         cxt.moveTo(0, 0);
-        cxt.lineTo(width, 24);
+        cxt.lineTo(width, 20);
       } else {
         cxt.moveTo(width, 0);
-        cxt.lineTo(0, 24);
+        cxt.lineTo(0, 20);
       }
       cxt.stroke();
     }, 500);
@@ -286,8 +289,8 @@ function App() {
     predictDraw(predictNum, sumDiff, "predict-canvas4", "4");
   };
   return (
-    <div className="">
-      <div className="w-fit flex mx-auto mt-8">
+    <div className="h-full w-full bg-zinc-200 overflow-x-scroll">
+      <div className="w-fit h-fit  flex mx-auto pt-10 bg-zinc-200">
         <div className="relative">
           {one.map((item, index) => {
             return <Row num={item} bgColor="#991b1b" key={index} />;
@@ -296,7 +299,7 @@ function App() {
           <canvas
             id="predict-canvas"
             width={predictWidth}
-            height={24}
+            height={20}
             color="#111"
             style={{
               position: "absolute",
@@ -328,7 +331,7 @@ function App() {
           <canvas
             id="predict-canvas1"
             width={predictWidth1}
-            height={24}
+            height={20}
             color="#111"
             style={{
               position: "absolute",
@@ -360,7 +363,7 @@ function App() {
           <canvas
             id="predict-canvas2"
             width={predictWidth2}
-            height={24}
+            height={20}
             color="#111"
             style={{
               position: "absolute",
@@ -392,7 +395,7 @@ function App() {
           <canvas
             id="predict-canvas3"
             width={predictWidth3}
-            height={24}
+            height={20}
             color="#111"
             style={{
               position: "absolute",
@@ -424,7 +427,7 @@ function App() {
           <canvas
             id="predict-canvas4"
             width={predictWidth4}
-            height={24}
+            height={20}
             color="#111"
             style={{
               position: "absolute",
@@ -449,6 +452,7 @@ function App() {
           ></canvas>
         </div>
       </div>
+      <div className="h-20 bg-zinc-200"></div>
     </div>
   );
 }
