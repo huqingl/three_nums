@@ -28,7 +28,7 @@ function PredictSquare({ dataHasNum, children, makeNum }) {
 function Number({ num, bgColor }) {
   return (
     <span
-      className="block w-4 h-4 text-center text-white z-10"
+      className="block w-3.5 h-3.5 text-center text-white z-10"
       style={{
         borderRadius: "50%",
         fontSize: "12px",
@@ -150,7 +150,7 @@ function App() {
   const [oneHeight, setOneHeight] = useState(0);
 
   const Draw = (data, id) => {
-    console.log(data)
+    // console.log(data)
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
     cxt.beginPath();
@@ -181,7 +181,6 @@ function App() {
       Draw(sumEnd, "canvas3");
       Draw(sumDiff, "canvas4");
     },2000)
-
   }, [one]);
   const predictDraw = (predictNum, data, id, No) => {
     //设置连接线所在canvas画布的宽度
@@ -226,6 +225,7 @@ function App() {
     //开始画线
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
+    cxt.clearRect(0,0,200,20)
     setTimeout(() => {
       cxt.beginPath();
       if (lastNum < predictNum) {
