@@ -94,8 +94,6 @@ function App() {
     sumDiff = [],
     all = [];
   useEffect(() => {
-    // prev, data1
-
     axios
       .get("https://huqinlong.com/d/houtai/get_history_before.php")
       .then((res) => {
@@ -128,14 +126,16 @@ function App() {
         sumDiff.push(sumD);
       });
       all.push(one, two, three, sumEnd, sumDiff);
+      console.log(all)
+      
       // setOne(one);
-      oneRef.current = one;
+      // oneRef.current = one;
       // setTwo(two);
       // setThree(three);
       // setSumEnd(sumEnd);
       // setSumDiff(sumDiff);
-      setAllData(all);
-      console.log(all);
+      setAllData([one, two, three, sumEnd, sumDiff]);
+      console.log(allData)
     });
   }, []);
   const [oneWidth, setOneWidth] = useState(0);
@@ -160,62 +160,62 @@ function App() {
     });
     cxt.stroke();
   };
-  useEffect(() => {
-    setTimeout(() => {
-      const oneLenth = oneRef.current.length;
-      const oneWidth = 20 * 10;
-      const oneHeight = 20 * oneLenth;
-      setOneWidth(oneWidth);
-      setOneHeight(oneHeight);
-      Draw(one, "canvas");
-    }, 2000);
-  }, [one]);
-  const predictDraw = (predictNum, data, id, No) => {
-    //设置连接线所在canvas画布的宽度
-    let lastNum = data[data.length - 1];
-    let width = Math.abs(lastNum - predictNum) * 20;
-    let top = oneHeight - 10;
-    var left;
-    if (lastNum < predictNum) {
-      left = lastNum * 20 + 10;
-    } else {
-      left = predictNum * 20 + 10;
-    }
-    switch (No) {
-      case "":
-        setPredictWidth(width);
-        setPredictTop(top);
-        setPredictLeft(left);
-        break;
-    }
-    //设置画布position
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     const oneLenth = oneRef.current.length;
+  //     const oneWidth = 20 * 10;
+  //     const oneHeight = 20 * oneLenth;
+  //     setOneWidth(oneWidth);
+  //     setOneHeight(oneHeight);
+  //     Draw(one, "canvas");
+  //   }, 2000);
+  // }, [one]);
+  // const predictDraw = (predictNum, data, id, No) => {
+  //   //设置连接线所在canvas画布的宽度
+  //   let lastNum = data[data.length - 1];
+  //   let width = Math.abs(lastNum - predictNum) * 20;
+  //   let top = oneHeight - 10;
+  //   var left;
+  //   if (lastNum < predictNum) {
+  //     left = lastNum * 20 + 10;
+  //   } else {
+  //     left = predictNum * 20 + 10;
+  //   }
+  //   switch (No) {
+  //     case "":
+  //       setPredictWidth(width);
+  //       setPredictTop(top);
+  //       setPredictLeft(left);
+  //       break;
+  //   }
+  //   //设置画布position
 
-    //开始画线
-    let cnv = document.getElementById(id);
-    let cxt = cnv.getContext("2d");
-    cxt.clearRect(0, 0, 200, 20);
-    setTimeout(() => {
-      cxt.beginPath();
-      if (lastNum < predictNum) {
-        cxt.moveTo(0, 0);
-        cxt.lineTo(width, 20);
-      } else {
-        cxt.moveTo(width, 0);
-        cxt.lineTo(0, 20);
-      }
-      cxt.stroke();
-    }, 500);
-  };
-  const [num, setNum] = useState(null);
-  const [predictWidth, setPredictWidth] = useState(0);
-  const [predictTop, setPredictTop] = useState(0);
-  const [predictLeft, setPredictLeft] = useState(0);
+  //   //开始画线
+  //   let cnv = document.getElementById(id);
+  //   let cxt = cnv.getContext("2d");
+  //   cxt.clearRect(0, 0, 200, 20);
+  //   setTimeout(() => {
+  //     cxt.beginPath();
+  //     if (lastNum < predictNum) {
+  //       cxt.moveTo(0, 0);
+  //       cxt.lineTo(width, 20);
+  //     } else {
+  //       cxt.moveTo(width, 0);
+  //       cxt.lineTo(0, 20);
+  //     }
+  //     cxt.stroke();
+  //   }, 500);
+  // };
+  // const [num, setNum] = useState(null);
+  // const [predictWidth, setPredictWidth] = useState(0);
+  // const [predictTop, setPredictTop] = useState(0);
+  // const [predictLeft, setPredictLeft] = useState(0);
 
-  const makeNum = (predictNum) => {
-    //设置点击选择要显示的数字
-    setNum(predictNum);
-    predictDraw(predictNum, one, "predict-canvas", "");
-  };
+  // const makeNum = (predictNum) => {
+  //   //设置点击选择要显示的数字
+  //   setNum(predictNum);
+  //   predictDraw(predictNum, one, "predict-canvas", "");
+  // };
 
   return (
     <div className="h-full w-full bg-zinc-200 overflow-x-scroll">
@@ -226,8 +226,8 @@ function App() {
               {i.map((item, index) => {
                 return <Row num={item} bgColor="#991b1b" key={index} />;
               })}
-              <PredictRow num={num} bgColor="#991b1b" makeNum={makeNum} />
-              <canvas
+              {/* <PredictRow num={num} bgColor="#991b1b" makeNum={makeNum} /> */}
+              {/* <canvas
                 // id="predict-canvas"
                 id={`predict-canvas${k}`}
                 width={predictWidth}
@@ -240,7 +240,7 @@ function App() {
                   zIndex: 2,
                   // border: "1px dashed #111",
                 }}
-              ></canvas>
+              ></canvas> */}
               <canvas
                 id="canvas"
                 width={oneWidth}
