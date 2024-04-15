@@ -79,27 +79,29 @@ function PredictRow({ num, bgColor, makeNum }) {
 function App() {
   // const [prev, setPrev] = useState('')
   // const [data, setData] = useState([])
-  const [one, setOne] = useState([])
-  const [two, setTwo] = useState([])
-  const [three, setThree] = useState([])
-  const [sumEnd, setSumEnd] = useState([])
-  const [sumDiff, setSumDiff] = useState([])
-  var oneRef = useRef()
-  // const prevO = useRef("000")
-  // const dataO = useRef(["000","000"])
-  // var prev, data1
+  // const [one, setOne] = useState([]);
+  // const [two, setTwo] = useState([]);
+  // const [three, setThree] = useState([]);
+  // const [sumEnd, setSumEnd] = useState([]);
+  // const [sumDiff, setSumDiff] = useState([]);
+  const [allData, setAllData] = useState([]);
+  var oneRef = useRef();
+  var prev = "000";
+  var one = [],
+    two = [],
+    three = [],
+    sumEnd = [],
+    sumDiff = [],
+    all = [];
   useEffect(() => {
     // prev, data1
-    var prev = "000"
-    var one = [],
-      two = [],
-      three = [],
-      sumEnd = [],
-      sumDiff = [];
-    axios.get('https://huqinlong.com/d/houtai/get_history_before.php').then((res) => {
-      prev = res.data[0]
-    })
-    axios.get('https://huqinlong.com/d/houtai/get_history.php').then((res) => {
+
+    axios
+      .get("https://huqinlong.com/d/houtai/get_history_before.php")
+      .then((res) => {
+        prev = res.data[0];
+      });
+    axios.get("https://huqinlong.com/d/houtai/get_history.php").then((res) => {
       res.data.map((item, index) => {
         one.push(parseInt(item.charAt(0)));
         two.push(parseInt(item.charAt(1)));
@@ -113,39 +115,29 @@ function App() {
         if (index === 0) {
           var sumD = Math.abs(
             sumE -
-            parseInt(
-              (parseInt(prev.charAt(0)) +
-                parseInt(prev.charAt(1)) +
-                parseInt(prev.charAt(2))) %
-              10
-            )
+              parseInt(
+                (parseInt(prev.charAt(0)) +
+                  parseInt(prev.charAt(1)) +
+                  parseInt(prev.charAt(2))) %
+                  10
+              )
           );
         } else {
           sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
         }
         sumDiff.push(sumD);
       });
-      setOne(one)
-      oneRef.current = one
-      setTwo(two)
-      setThree(three)
-      setSumEnd(sumEnd)
-      setSumDiff(sumDiff)
-    })
-
-  }, [])
-  // const prev = "557";
-  // const data = ['216', '057', '182', '427', '751', '245', '730', '665', '190', '888', '119', '030', '737', '932', '567', '702', '066', '730', '667'];
-  // var one = [],
-  //   two = [],
-  //   three = [],
-  //   sumEnd = [],
-  //   sumDiff = [];
-
-
-  // const one = [0, 3, 8, 4];
-  // const two = [9, 4, 1, 5];
-  // const three = [3, 1, 2, 7];
+      all.push(one, two, three, sumEnd, sumDiff);
+      // setOne(one);
+      oneRef.current = one;
+      // setTwo(two);
+      // setThree(three);
+      // setSumEnd(sumEnd);
+      // setSumDiff(sumDiff);
+      setAllData(all);
+      console.log(all);
+    });
+  }, []);
   const [oneWidth, setOneWidth] = useState(0);
   const [oneHeight, setOneHeight] = useState(0);
 
@@ -176,11 +168,7 @@ function App() {
       setOneWidth(oneWidth);
       setOneHeight(oneHeight);
       Draw(one, "canvas");
-      Draw(two, "canvas1");
-      Draw(three, "canvas2");
-      Draw(sumEnd, "canvas3");
-      Draw(sumDiff, "canvas4");
-    },2000)
+    }, 2000);
   }, [one]);
   const predictDraw = (predictNum, data, id, No) => {
     //设置连接线所在canvas画布的宽度
@@ -199,33 +187,13 @@ function App() {
         setPredictTop(top);
         setPredictLeft(left);
         break;
-      case "1":
-        setPredictWidth1(width);
-        setPredictTop1(top);
-        setPredictLeft1(left);
-        break;
-      case "2":
-        setPredictWidth2(width);
-        setPredictTop2(top);
-        setPredictLeft2(left);
-        break;
-      case "3":
-        setPredictWidth3(width);
-        setPredictTop3(top);
-        setPredictLeft3(left);
-        break;
-      case "4":
-        setPredictWidth4(width);
-        setPredictTop4(top);
-        setPredictLeft4(left);
-        break;
     }
     //设置画布position
 
     //开始画线
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
-    cxt.clearRect(0,0,200,20)
+    cxt.clearRect(0, 0, 200, 20);
     setTimeout(() => {
       cxt.beginPath();
       if (lastNum < predictNum) {
@@ -243,214 +211,52 @@ function App() {
   const [predictTop, setPredictTop] = useState(0);
   const [predictLeft, setPredictLeft] = useState(0);
 
-  const [num1, setNum1] = useState(null);
-  const [predictWidth1, setPredictWidth1] = useState(0);
-  const [predictTop1, setPredictTop1] = useState(0);
-  const [predictLeft1, setPredictLeft1] = useState(0);
-
-  const [num2, setNum2] = useState(null);
-  const [predictWidth2, setPredictWidth2] = useState(0);
-  const [predictTop2, setPredictTop2] = useState(0);
-  const [predictLeft2, setPredictLeft2] = useState(0);
-
-  const [num3, setNum3] = useState(null);
-  const [predictWidth3, setPredictWidth3] = useState(0);
-  const [predictTop3, setPredictTop3] = useState(0);
-  const [predictLeft3, setPredictLeft3] = useState(0);
-
-  const [num4, setNum4] = useState(null);
-  const [predictWidth4, setPredictWidth4] = useState(0);
-  const [predictTop4, setPredictTop4] = useState(0);
-  const [predictLeft4, setPredictLeft4] = useState(0);
-
   const makeNum = (predictNum) => {
     //设置点击选择要显示的数字
     setNum(predictNum);
     predictDraw(predictNum, one, "predict-canvas", "");
   };
-  const makeNum1 = (predictNum) => {
-    //设置点击选择要显示的数字
-    setNum1(predictNum);
-    predictDraw(predictNum, two, "predict-canvas1", "1");
-  };
-  const makeNum2 = (predictNum) => {
-    //设置点击选择要显示的数字
-    setNum2(predictNum);
-    predictDraw(predictNum, three, "predict-canvas2", "2");
-  };
-  const makeNum3 = (predictNum) => {
-    //设置点击选择要显示的数字
-    setNum3(predictNum);
-    predictDraw(predictNum, sumEnd, "predict-canvas3", "3");
-  };
-  const makeNum4 = (predictNum) => {
-    //设置点击选择要显示的数字
-    setNum4(predictNum);
-    predictDraw(predictNum, sumDiff, "predict-canvas4", "4");
-  };
+
   return (
     <div className="h-full w-full bg-zinc-200 overflow-x-scroll">
       <div className="w-fit h-fit  flex mx-auto pt-10 bg-zinc-200">
-        <div className="relative">
-          {one.map((item, index) => {
-            return <Row num={item} bgColor="#991b1b" key={index} />;
-          })}
-          <PredictRow num={num} bgColor="#991b1b" makeNum={makeNum} />
-          <canvas
-            id="predict-canvas"
-            width={predictWidth}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: predictTop,
-              left: predictLeft,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas"
-            width={oneWidth}
-            height={oneHeight}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-        </div>
-        <div className="relative">
-          {two.map((item, index) => {
-            return <Row num={item} bgColor="#0284c7" key={index} />;
-          })}
-          <PredictRow num={num1} bgColor="#0284c7" makeNum={makeNum1} />
-          <canvas
-            id="predict-canvas1"
-            width={predictWidth1}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: predictTop1,
-              left: predictLeft1,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas1"
-            width={oneWidth}
-            height={oneHeight}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-        </div>
-        <div className="relative">
-          {three.map((item, index) => {
-            return <Row num={item} bgColor="#166534" key={index} />;
-          })}
-          <PredictRow num={num2} bgColor="#166534" makeNum={makeNum2} />
-          <canvas
-            id="predict-canvas2"
-            width={predictWidth2}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: predictTop2,
-              left: predictLeft2,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas2"
-            width={oneWidth}
-            height={oneHeight}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-        </div>
-        <div className="relative">
-          {sumEnd.map((item, index) => {
-            return <Row num={item} bgColor="#a16207" key={index} />;
-          })}
-          <PredictRow num={num3} bgColor="#a16207" makeNum={makeNum3} />
-          <canvas
-            id="predict-canvas3"
-            width={predictWidth3}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: predictTop3,
-              left: predictLeft3,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas3"
-            width={oneWidth}
-            height={oneHeight}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-        </div>
-        <div className="relative">
-          {sumDiff.map((item, index) => {
-            return <Row num={item} bgColor="#155e75" key={index} />;
-          })}
-          <PredictRow num={num4} bgColor="#155e75" makeNum={makeNum4} />
-          <canvas
-            id="predict-canvas4"
-            width={predictWidth4}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: predictTop4,
-              left: predictLeft4,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas4"
-            width={oneWidth}
-            height={oneHeight}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-        </div>
+        {allData.map((i, k) => {
+          return (
+            <div className="relative" key={k}>
+              {i.map((item, index) => {
+                return <Row num={item} bgColor="#991b1b" key={index} />;
+              })}
+              <PredictRow num={num} bgColor="#991b1b" makeNum={makeNum} />
+              <canvas
+                // id="predict-canvas"
+                id={`predict-canvas${k}`}
+                width={predictWidth}
+                height={20}
+                color="#111"
+                style={{
+                  position: "absolute",
+                  top: predictTop,
+                  left: predictLeft,
+                  zIndex: 2,
+                  // border: "1px dashed #111",
+                }}
+              ></canvas>
+              <canvas
+                id="canvas"
+                width={oneWidth}
+                height={oneHeight}
+                color="#111"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                  // border: "1px dashed #111",
+                }}
+              ></canvas>
+            </div>
+          );
+        })}
       </div>
       <div className="h-20 bg-zinc-200"></div>
     </div>
