@@ -86,6 +86,7 @@ function App() {
   // const [sumDiff, setSumDiff] = useState([]);
   const [allData, setAllData] = useState([]);
   var oneRef = useRef();
+  const cache = useRef(null);
   var prev = "000";
   var one = [],
     two = [],
@@ -94,49 +95,61 @@ function App() {
     sumDiff = [],
     all = [];
   useEffect(() => {
-    axios
-      .get("https://huqinlong.com/d/houtai/get_history_before.php")
-      .then((res) => {
-        prev = res.data[0];
-      });
-    axios.get("https://huqinlong.com/d/houtai/get_history.php").then((res) => {
-      res.data.map((item, index) => {
-        one.push(parseInt(item.charAt(0)));
-        two.push(parseInt(item.charAt(1)));
-        three.push(parseInt(item.charAt(2)));
-        let sum =
-          parseInt(item.charAt(0)) +
-          parseInt(item.charAt(1)) +
-          parseInt(item.charAt(2));
-        let sumE = parseInt(sum % 10);
-        sumEnd.push(sumE);
-        if (index === 0) {
-          var sumD = Math.abs(
-            sumE -
-              parseInt(
-                (parseInt(prev.charAt(0)) +
-                  parseInt(prev.charAt(1)) +
-                  parseInt(prev.charAt(2))) %
-                  10
-              )
-          );
-        } else {
-          sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
+    let ignore = false;
+    if (!cache.current) {
+      axios
+        .get("https://huqinlong.com/d/houtai/get_history.php")
+        .then((res) => {
+          prev = res.data[0];
+          let tempData = res.data.slice(1);
+          tempData.map((item, index) => {
+            one.push(parseInt(item.charAt(0)));
+            two.push(parseInt(item.charAt(1)));
+            three.push(parseInt(item.charAt(2)));
+            // setOne([...one, parseInt(item.charAt(0))]);
+            // setTwo([...two, parseInt(item.charAt(0))]);
+            // setThree([...three, parseInt(item.charAt(0))]);
+            let sum =
+              parseInt(item.charAt(0)) +
+              parseInt(item.charAt(1)) +
+              parseInt(item.charAt(2));
+            let sumE = parseInt(sum % 10);
+            sumEnd.push(sumE);
+            // setSumEnd([...sumEnd, sumE]);
+            if (index === 0) {
+              var sumD = Math.abs(
+                sumE -
+                  parseInt(
+                    (parseInt(prev.charAt(0)) +
+                      parseInt(prev.charAt(1)) +
+                      parseInt(prev.charAt(2))) %
+                      10
+                  )
+              );
+            } else {
+              sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
+            }
+            sumDiff.push(sumD);
+            // setSumDiff([...sumDiff, sumDiff]);
+          });
+          all.push(one, two, three, sumEnd, sumDiff);
+          // console.log(all);
+          cache.current = [one, two, three, sumEnd, sumDiff]
+          // setOne(one);
+          // oneRef.current = one;
+          // setTwo(two);
+          // setThree(three);
+          // setSumEnd(sumEnd);
+          // setSumDiff(sumDiff);
+          if(!ignore){
+            setAllData(cache.current);
+          }
+          // console.log(allData);
+        });
+        return ()=>{
+          ignore = true;
         }
-        sumDiff.push(sumD);
-      });
-      all.push(one, two, three, sumEnd, sumDiff);
-      console.log(all)
-      
-      // setOne(one);
-      // oneRef.current = one;
-      // setTwo(two);
-      // setThree(three);
-      // setSumEnd(sumEnd);
-      // setSumDiff(sumDiff);
-      setAllData([one, two, three, sumEnd, sumDiff]);
-      console.log(allData)
-    });
+    }
   }, []);
   const [oneWidth, setOneWidth] = useState(0);
   const [oneHeight, setOneHeight] = useState(0);
