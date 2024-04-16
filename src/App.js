@@ -11,15 +11,16 @@ function Square({ dataHasNum, children }) {
     </div>
   );
 }
-function PredictSquare({ dataHasNum, children, makeNum }) {
-  const setNum = (i) => {
-    makeNum(i);
+function PredictSquare({ dataHasNum,cols, children, makeNum }) {
+  const setNum = (i,col) => {
+    makeNum(i,col);
   };
   return (
     <div
       className="square w-5 h-5 flex justify-center items-center cursor-pointer"
       data-has-num={dataHasNum}
-      onClick={() => setNum(dataHasNum)}
+      data-has-cols={cols}
+      onClick={() => setNum(dataHasNum,cols)}
     >
       {children}
     </div>
@@ -53,7 +54,7 @@ function Row({ num, bgColor }) {
     </div>
   );
 }
-function PredictRow({ num, bgColor, makeNum }) {
+function PredictRow({ num, bgColor, makeNum, cols ,currentCol}) {
   // useEffect(()=>{
   // console.log(one)
   // },[])
@@ -61,11 +62,12 @@ function PredictRow({ num, bgColor, makeNum }) {
     <div className="row mr-2">
       <div className="flex">
         {Array.from(new Array(10), (v, i) => {
-          const el = i === num ? <Number num={num} bgColor={bgColor} /> : "";
+          const el = i === num && currentCol ? <Number num={num} bgColor={bgColor} /> : "";
           return (
             <PredictSquare
               key={i}
               dataHasNum={i}
+              cols={cols}
               children={el}
               makeNum={makeNum}
             />
@@ -86,77 +88,76 @@ function App() {
   // const [sumDiff, setSumDiff] = useState([]);
   const [allData, setAllData] = useState([]);
   var oneRef = useRef();
-  const cache = useRef(null);
-  var prev = "000";
-  var one = [],
-    two = [],
-    three = [],
-    sumEnd = [],
-    sumDiff = [],
-    all = [];
+  var allRef = useRef();
+  // var prev = "000";
+  const colors = ['#991b1b', '#0284c7', '#166534', '#a16207', '#155e75']
   useEffect(() => {
-    let ignore = false;
-    if (!cache.current) {
-      axios
-        .get("https://huqinlong.com/d/houtai/get_history.php")
-        .then((res) => {
-          prev = res.data[0];
-          let tempData = res.data.slice(1);
-          tempData.map((item, index) => {
-            one.push(parseInt(item.charAt(0)));
-            two.push(parseInt(item.charAt(1)));
-            three.push(parseInt(item.charAt(2)));
-            // setOne([...one, parseInt(item.charAt(0))]);
-            // setTwo([...two, parseInt(item.charAt(0))]);
-            // setThree([...three, parseInt(item.charAt(0))]);
-            let sum =
-              parseInt(item.charAt(0)) +
-              parseInt(item.charAt(1)) +
-              parseInt(item.charAt(2));
-            let sumE = parseInt(sum % 10);
-            sumEnd.push(sumE);
-            // setSumEnd([...sumEnd, sumE]);
-            if (index === 0) {
-              var sumD = Math.abs(
-                sumE -
-                  parseInt(
-                    (parseInt(prev.charAt(0)) +
-                      parseInt(prev.charAt(1)) +
-                      parseInt(prev.charAt(2))) %
-                      10
-                  )
-              );
-            } else {
-              sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
-            }
-            sumDiff.push(sumD);
-            // setSumDiff([...sumDiff, sumDiff]);
-          });
-          all.push(one, two, three, sumEnd, sumDiff);
-          // console.log(all);
-          cache.current = [one, two, three, sumEnd, sumDiff]
-          // setOne(one);
-          // oneRef.current = one;
-          // setTwo(two);
-          // setThree(three);
-          // setSumEnd(sumEnd);
-          // setSumDiff(sumDiff);
-          if(!ignore){
-            setAllData(cache.current);
+    axios
+      .get("https://huqinlong.com/d/houtai/get_history.php")
+      .then((res) => {
+        let prev = res.data[0];
+        let one = [],
+          two = [],
+          three = [],
+          sumEnd = [],
+          sumDiff = [];
+        let tempData = res.data.slice(1);
+        tempData.map((item, index) => {
+          one.push(parseInt(item.charAt(0)));
+          oneRef.current = one;
+          two.push(parseInt(item.charAt(1)));
+          three.push(parseInt(item.charAt(2)));
+          // setOne([...one, parseInt(item.charAt(0))]);
+          // setTwo([...two, parseInt(item.charAt(0))]);
+          // setThree([...three, parseInt(item.charAt(0))]);
+          let sum =
+            parseInt(item.charAt(0)) +
+            parseInt(item.charAt(1)) +
+            parseInt(item.charAt(2));
+          let sumE = parseInt(sum % 10);
+          sumEnd.push(sumE);
+          // setSumEnd([...sumEnd, sumE]);
+          if (index === 0) {
+            var sumD = Math.abs(
+              sumE -
+              parseInt(
+                (parseInt(prev.charAt(0)) +
+                  parseInt(prev.charAt(1)) +
+                  parseInt(prev.charAt(2))) %
+                10
+              )
+            );
+          } else {
+            sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
           }
-          // console.log(allData);
+          sumDiff.push(sumD);
+          // setSumDiff([...sumDiff, sumDiff]);
         });
-        return ()=>{
-          ignore = true;
-        }
-    }
+        // all.push(one, two, three, sumEnd, sumDiff);
+        // console.log(all);
+        allRef.current = [one, two, three, sumEnd, sumDiff]
+        // setOne(one);
+        // oneRef.current = one;
+        // setTwo(two);
+        // setThree(three);
+        // setSumEnd(sumEnd);
+        // setSumDiff(sumDiff);
+        // if (!ignore) {
+        setAllData([one, two, three, sumEnd, sumDiff]);
+        // }
+        // console.log(allData);
+      });
+    // return () => {
+    //   ignore = true;
+    // }
+    // }
   }, []);
   const [oneWidth, setOneWidth] = useState(0);
   const [oneHeight, setOneHeight] = useState(0);
 
   const Draw = (data, id) => {
     // console.log(data)
-    let cnv = document.getElementById(id);
+    let cnv = document.getElementById('canvas' + id);
     let cxt = cnv.getContext("2d");
     cxt.beginPath();
 
@@ -173,16 +174,19 @@ function App() {
     });
     cxt.stroke();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     const oneLenth = oneRef.current.length;
-  //     const oneWidth = 20 * 10;
-  //     const oneHeight = 20 * oneLenth;
-  //     setOneWidth(oneWidth);
-  //     setOneHeight(oneHeight);
-  //     Draw(one, "canvas");
-  //   }, 2000);
-  // }, [one]);
+  useEffect(() => {
+    setTimeout(() => {
+      const oneLenth = oneRef.current.length;
+      const oneWidth = 20 * 10;
+      const oneHeight = 20 * oneLenth;
+      setOneWidth(oneWidth);
+      setOneHeight(oneHeight);
+      allRef.current.forEach((item, k) => {
+        Draw(item, k)
+      });
+      // Draw(one, "canvas");
+    }, 2000);
+  });
   // const predictDraw = (predictNum, data, id, No) => {
   //   //设置连接线所在canvas画布的宽度
   //   let lastNum = data[data.length - 1];
@@ -219,16 +223,18 @@ function App() {
   //     cxt.stroke();
   //   }, 500);
   // };
-  // const [num, setNum] = useState(null);
-  // const [predictWidth, setPredictWidth] = useState(0);
-  // const [predictTop, setPredictTop] = useState(0);
-  // const [predictLeft, setPredictLeft] = useState(0);
+  const [num, setNum] = useState();
+  const [col, setCol] = useState();
+  const [predictWidth, setPredictWidth] = useState(0);
+  const [predictTop, setPredictTop] = useState(0);
+  const [predictLeft, setPredictLeft] = useState(0);
 
-  // const makeNum = (predictNum) => {
-  //   //设置点击选择要显示的数字
-  //   setNum(predictNum);
-  //   predictDraw(predictNum, one, "predict-canvas", "");
-  // };
+  const makeNum = (predictNum,col) => {
+    //设置点击选择要显示的数字
+    setNum(predictNum);
+    setCol(col)
+    // predictDraw(predictNum, one, "predict-canvas", "");
+  };
 
   return (
     <div className="h-full w-full bg-zinc-200 overflow-x-scroll">
@@ -237,9 +243,9 @@ function App() {
           return (
             <div className="relative" key={k}>
               {i.map((item, index) => {
-                return <Row num={item} bgColor="#991b1b" key={index} />;
+                return <Row num={item} bgColor={colors[k]} key={index} />;
               })}
-              {/* <PredictRow num={num} bgColor="#991b1b" makeNum={makeNum} /> */}
+              <PredictRow num={num} bgColor={colors[k]} makeNum={makeNum} cols={k} currentCol = {col === k}/>
               {/* <canvas
                 // id="predict-canvas"
                 id={`predict-canvas${k}`}
@@ -255,7 +261,7 @@ function App() {
                 }}
               ></canvas> */}
               <canvas
-                id="canvas"
+                id={`canvas${k}`}
                 width={oneWidth}
                 height={oneHeight}
                 color="#111"
