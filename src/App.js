@@ -123,12 +123,12 @@ function App() {
         if (index === 0) {
           var sumD = Math.abs(
             sumE -
-              parseInt(
-                (parseInt(prev.charAt(0)) +
-                  parseInt(prev.charAt(1)) +
-                  parseInt(prev.charAt(2))) %
-                  10
-              )
+            parseInt(
+              (parseInt(prev.charAt(0)) +
+                parseInt(prev.charAt(1)) +
+                parseInt(prev.charAt(2))) %
+              10
+            )
           );
         } else {
           sumD = Math.abs(sumEnd[index] - sumEnd[index - 1]);
@@ -155,15 +155,14 @@ function App() {
     // }
     // }
   }, []);
-  const [oneWidth, setOneWidth] = useState(0);
-  const [oneHeight, setOneHeight] = useState(0);
+  // const [oneWidth, setOneWidth] = useState(0);
+  // const [oneHeight, setOneHeight] = useState(0);
 
   const Draw = (data, id) => {
     // console.log(data)
     let cnv = document.getElementById("canvas" + id);
     let cxt = cnv.getContext("2d");
     cxt.beginPath();
-
     let startNum = data[0];
     let startX = startNum * 20 + 10;
     let startY = 10;
@@ -179,11 +178,11 @@ function App() {
   };
   useEffect(() => {
     setTimeout(() => {
-      const onelenth = oneRef.current.length;
-      const onewidth = 20 * 10;
-      const oneheight = 20 * onelenth;
-      setOneWidth(onewidth);
-      setOneHeight(oneheight);
+      // const onelenth = oneRef.current.length;
+      // const onewidth = 20 * 10;
+      // const oneheight = 20 * onelenth;
+      // setOneWidth(onewidth);
+      // setOneHeight(oneheight);
       allRef.current.forEach((item, k) => {
         Draw(item, k);
       });
@@ -201,23 +200,24 @@ function App() {
       left = predictNum * 20 + 10;
     }
     let a = predictLeft.map((item, k) => {
-      if(k === parseInt(No)){
+      if (k === parseInt(No)) {
         return left
       }
       return item;
     });
     setPredictLeft(a)
     let b = predictWidth.map((item, k) => {
-      if(k === parseInt(No)){
+      if (k === parseInt(No)) {
         return width
       }
       return item;
     });
     setPredictWidth(b)
-  
+
     //开始画线
-    let cnv = document.getElementById('predict-canvas'+No);
+    let cnv = document.getElementById('predict-canvas' + No);
     let cxt = cnv.getContext("2d");
+    cxt.imageSmoothingEnabled = true
     cxt.clearRect(0, 0, 200, 20);
     setTimeout(() => {
       cxt.beginPath();
@@ -233,27 +233,27 @@ function App() {
   };
 
 
-  const [nums, setNums] = useState(['','','','','']);
+  const [nums, setNums] = useState(['', '', '', '', '']);
   const [col, setCol] = useState([]);
 
-  const [predictWidth, setPredictWidth] = useState(['','','','','']);
-  const [predictLeft, setPredictLeft] = useState(['','','','','']);
+  const [predictWidth, setPredictWidth] = useState(['', '', '', '', '']);
+  const [predictLeft, setPredictLeft] = useState(['', '', '', '', '']);
 
   const makeNum = (predictNum, c) => {
     let a = nums.map((item, k) => {
-      if(k === parseInt(c)){
+      if (k === parseInt(c)) {
         return predictNum
       }
       return item;
     });
     setNums(a);
     setCol([...col, c]);
-    predictDraw(predictNum,allRef.current[c], c)
+    predictDraw(predictNum, allRef.current[c], c)
   };
 
   return (
-    <div className="h-full w-full bg-zinc-200 overflow-x-scroll">
-      <div className="w-fit h-fit  flex mx-auto pt-10 bg-zinc-200">
+    <div className="h-full w-full bg-zinc-200">
+      <div className="w-fit h-fit  flex mx-auto p-10 bg-zinc-200">
         {allData.map((i, k) => {
           return (
             <div className="relative" key={k}>
@@ -283,8 +283,8 @@ function App() {
               ></canvas>
               <canvas
                 id={`canvas${k}`}
-                width={oneWidth}
-                height={oneHeight}
+                width='200'
+                height='600'
                 color="#111"
                 style={{
                   position: "absolute",
@@ -298,7 +298,6 @@ function App() {
           );
         })}
       </div>
-      <div className="h-20 bg-zinc-200"></div>
     </div>
   );
 }
