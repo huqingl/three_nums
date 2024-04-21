@@ -153,6 +153,7 @@ function App() {
     // console.log(data)
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
+    cxt.imageSmoothingEnabled = true
     cxt.beginPath();
 
     let startNum = data[0];
@@ -225,6 +226,7 @@ function App() {
     //开始画线
     let cnv = document.getElementById(id);
     let cxt = cnv.getContext("2d");
+    cxt.imageSmoothingEnabled = true
     cxt.clearRect(0,0,200,20)
     setTimeout(() => {
       cxt.beginPath();
