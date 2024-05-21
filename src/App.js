@@ -11,6 +11,20 @@ function Square({ dataHasNum, children }) {
     </div>
   );
 }
+function SumPredictSquare({ dataHasNum, children, makeNum }) {
+  const setNum = (i) => {
+    makeNum(i);
+  };
+  return (
+    <div
+      className="square w-5 h-5 flex justify-center items-center cursor-pointer"
+      data-has-num={dataHasNum}
+      onClick={() => setNum(dataHasNum)}
+    >
+      {children}
+    </div>
+  );
+}
 function PredictSquare({ dataHasNum, cols, children, makeNum }) {
   const setNum = (i, col) => {
     makeNum(i, col);
@@ -41,7 +55,18 @@ function Number({ num, bgColor }) {
     </span>
   );
 }
-
+function SumRow({ num, bgColor }) {
+  return (
+    <div className="row mr-2">
+      <div className="flex">
+        {Array.from(new Array(28), (v, i) => {
+          const el = i === num ? <Number num={i} bgColor={bgColor} /> : "";
+          return <Square key={i} dataHasNum={i} children={el} />;
+        })}
+      </div>
+    </div>
+  );
+}
 function Row({ num, bgColor }) {
   return (
     <div className="row mr-2">
@@ -55,9 +80,6 @@ function Row({ num, bgColor }) {
   );
 }
 function PredictRow({ num, bgColor, makeNum, cols, currentCol }) {
-  // useEffect(()=>{
-  // console.log(one)
-  // },[])
   return (
     <div className="row mr-2">
       <div className="flex">
@@ -82,6 +104,30 @@ function PredictRow({ num, bgColor, makeNum, cols, currentCol }) {
     </div>
   );
 }
+function SumPredictRow({ num, bgColor, makeNum }) {
+  return (
+    <div className="row mr-2">
+      <div className="flex">
+        {Array.from(new Array(28), (v, i) => {
+          const el =
+            i === num ? (
+              <Number num={num} bgColor={bgColor} />
+            ) : (
+              ""
+            );
+          return (
+            <SumPredictSquare
+              key={i}
+              dataHasNum={i}
+              children={el}
+              makeNum={makeNum}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function App() {
   // const [prev, setPrev] = useState('')
@@ -92,8 +138,11 @@ function App() {
   // const [sumEnd, setSumEnd] = useState([]);
   // const [sumDiff, setSumDiff] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [sumData, setSumData] = useState([]);
+  const [show, setShow] = useState(false);
   var oneRef = useRef();
   var allRef = useRef();
+  var sumRef = useRef();
   // var prev = "000";
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
@@ -103,7 +152,8 @@ function App() {
         two = [],
         three = [],
         sumEnd = [],
-        sumDiff = [];
+        sumDiff = [],
+        sums = [];
       let tempData = res.data.slice(1);
       tempData.forEach((item, index) => {
         one.push(parseInt(item.charAt(0)));
@@ -119,6 +169,7 @@ function App() {
           parseInt(item.charAt(2));
         let sumE = parseInt(sum % 10);
         sumEnd.push(sumE);
+        sums.push(sum);
         // setSumEnd([...sumEnd, sumE]);
         if (index === 0) {
           var sumD = Math.abs(
@@ -139,6 +190,7 @@ function App() {
       // all.push(one, two, three, sumEnd, sumDiff);
       // console.log(all);
       allRef.current = [one, two, three, sumEnd, sumDiff];
+      sumRef.current = sums
       // setOne(one);
       // oneRef.current = one;
       // setTwo(two);
@@ -147,6 +199,7 @@ function App() {
       // setSumDiff(sumDiff);
       // if (!ignore) {
       setAllData([one, two, three, sumEnd, sumDiff]);
+      setSumData(sums)
       // }
       // console.log(allData);
     });
@@ -186,6 +239,7 @@ function App() {
       allRef.current.forEach((item, k) => {
         Draw(item, k);
       });
+      Draw(sumRef.current, '5')
     }, 2000);
   });
   const predictDraw = (predictNum, data, No) => {
@@ -231,6 +285,38 @@ function App() {
       cxt.stroke();
     }, 500);
   };
+  const sumPredictDraw = (predictNum, data) => {
+    //设置连接线所在canvas画布的宽度
+    let lastNum = data[data.length - 1];
+    let width = Math.abs(lastNum - predictNum) * 20;
+    // let top = oneHeight - 10;
+    var left;
+    if (lastNum < predictNum) {
+      left = lastNum * 20 + 10;
+    } else {
+      left = predictNum * 20 + 10;
+    }
+    setSumPredictLeft(left)
+
+    setSumPredictWidth(width)
+
+    //开始画线
+    let cnv = document.getElementById('predict-canvas5');
+    let cxt = cnv.getContext("2d");
+    cxt.imageSmoothingEnabled = true
+    cxt.clearRect(0, 0, 200, 20);
+    setTimeout(() => {
+      cxt.beginPath();
+      if (lastNum < predictNum) {
+        cxt.moveTo(0, 0);
+        cxt.lineTo(width, 20);
+      } else {
+        cxt.moveTo(width, 0);
+        cxt.lineTo(0, 20);
+      }
+      cxt.stroke();
+    }, 500);
+  };
 
 
   const [nums, setNums] = useState(['', '', '', '', '']);
@@ -238,7 +324,10 @@ function App() {
 
   const [predictWidth, setPredictWidth] = useState(['', '', '', '', '']);
   const [predictLeft, setPredictLeft] = useState(['', '', '', '', '']);
+  const [sumNum, setSumNum] = useState();
 
+  const [sumPredictWidth, setSumPredictWidth] = useState();
+  const [sumPredictLeft, setSumPredictLeft] = useState();
   const makeNum = (predictNum, c) => {
     let a = nums.map((item, k) => {
       if (k === parseInt(c)) {
@@ -250,10 +339,18 @@ function App() {
     setCol([...col, c]);
     predictDraw(predictNum, allRef.current[c], c)
   };
-
+  const makeSumNum = (predictNum) => {
+    setSumNum(predictNum)
+    sumPredictDraw(predictNum, sumRef.current)
+  };
+  const toggle = () => {
+    setShow(!show)
+  }
   return (
     <div className="h-full w-full bg-zinc-200">
-      <div className="w-fit h-fit  flex mx-auto p-10 bg-zinc-200">
+      <div className="py-4"> <button className="ml-20 p-2 bg-slate-300 rounded" onClick={toggle}>切换</button></div>
+
+      <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? 'hidden' : ''}`}>
         {allData.map((i, k) => {
           return (
             <div className="relative" key={k}>
@@ -297,6 +394,45 @@ function App() {
             </div>
           );
         })}
+
+      </div>
+      <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
+        <div className="relative">
+          {sumData.map((item, index) => {
+            return <SumRow num={item} bgColor={'#ea2222'} key={index} />;
+          })}
+          <SumPredictRow
+            num={sumNum}
+            bgColor={'#ea2222'}
+            makeNum={makeSumNum}
+          />
+          <canvas
+            id="predict-canvas5"
+            width={sumPredictWidth}
+            height={20}
+            color="#111"
+            style={{
+              position: "absolute",
+              top: sumData.length * 20 - 10,
+              left: sumPredictLeft,
+              zIndex: 2,
+              // border: "1px dashed #111",
+            }}
+          ></canvas>
+          <canvas
+            id="canvas5"
+            width='560'
+            height='600'
+            color="#111"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 2,
+              // border: "1px dashed #111",
+            }}
+          ></canvas>
+        </div>
       </div>
     </div>
   );
