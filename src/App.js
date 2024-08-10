@@ -399,11 +399,11 @@ function App() {
       <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
         <div className="relative">
           {sumData.map((item, index) => {
-            return <SumRow num={item} bgColor={'#ea2222'} key={index} />;
+            return <SumRow num={item} bgColor={'#86198f'} key={index} />;
           })}
           <SumPredictRow
             num={sumNum}
-            bgColor={'#ea2222'}
+            bgColor={'#86198f'}
             makeNum={makeSumNum}
           />
           <canvas
