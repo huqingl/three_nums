@@ -146,7 +146,7 @@ function App() {
   // var prev = "000";
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
-    axios.get("https://huqinlong.com/d/houtai/get_history.php").then((res) => {
+    axios.get("http://yuduntech.com:8070/d/houtai/get_history.php").then((res) => {
       let prev = res.data[0];
       let one = [],
         two = [],
@@ -399,7 +399,7 @@ function App() {
       <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
         <div className="relative">
           {sumData.map((item, index) => {
-            return <SumRow num={item} bgColor={'#86198f'} key={index} />;
+            return <SumRow num={item} bgColor={'#834987'} key={index} />;
           })}
           <SumPredictRow
             num={sumNum}
