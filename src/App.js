@@ -348,8 +348,7 @@ function App() {
   }
   return (
     <div className="h-full w-full bg-zinc-200">
-      <div className="py-4"> <button className="ml-20 p-2 bg-slate-300 rounded" onClick={toggle}>切换</button></div>
-
+      <div><a href="/TwoColor">two color</a></div>
       <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? 'hidden' : ''}`}>
         {allData.map((i, k) => {
           return (
@@ -434,6 +433,7 @@ function App() {
           ></canvas>
         </div>
       </div>
+      <div className="py-2 text-center"><button className="ml-20 p-2 bg-slate-300 rounded " onClick={toggle}>{show?'综合':'和'}</button></div>
     </div>
   );
 }

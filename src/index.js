@@ -1,13 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import App from './App';
+import TwoColor from './TwoColor';
 // import reportWebVitals from './reportWebVitals';
-
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "/TwoColor",
+    element: <TwoColor />
+  }
+]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider future={{
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    }} router={router} />
   </React.StrictMode>
 );
 
