@@ -59,12 +59,7 @@ function PredictRow({ num, bgColor, makeNum }) {
     <div className="row mr-2">
       <div className="flex">
         {Array.from(new Array(33), (v, i) => {
-          const el =
-            i === num ? (
-              <Number num={num} bgColor={bgColor} />
-            ) : (
-              ""
-            );
+          const el = i === num ? <Number num={num} bgColor={bgColor} /> : "";
           return (
             <PredictSquare
               key={i}
@@ -79,23 +74,22 @@ function PredictRow({ num, bgColor, makeNum }) {
   );
 }
 
-
 function TwoColor() {
   const [one, setOne] = useState([]);
   var oneRef = useRef();
-
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
-    axios.get("http://yuduntech.com:8070/d/houtai/get_two_color.php?num=0").then((res) => {
-      let one = [];
-      let tempData = res.data;
-      tempData.forEach((item) => {
-        one.push(parseInt(item));
+    axios
+      .get("http://yuduntech.com:8070/d/houtai/get_two_color.php?num=0")
+      .then((res) => {
+        let one = [];
+        let tempData = res.data;
+        tempData.forEach((item) => {
+          one.push(parseInt(item));
+        });
+        oneRef.current = one;
+        setOne(one);
       });
-      oneRef.current = one;
-      setOne(one);
-    });
-
   }, []);
 
   const Draw = (data) => {
@@ -118,32 +112,26 @@ function TwoColor() {
   };
   useEffect(() => {
     setTimeout(() => {
-      // const onelenth = oneRef.current.length;
-      // const onewidth = 20 * 10;
-      // const oneheight = 20 * onelenth;
-      // setOneWidth(onewidth);
-      // setOneHeight(oneheight);
       Draw(oneRef.current);
     }, 2000);
   });
   const predictDraw = (predictNum, data) => {
-    //设置连接线所在canvas画布的宽度
     let lastNum = data[data.length - 1];
+    //设置连接线所在canvas画布的宽度
     let width = Math.abs(lastNum - predictNum) * 20;
-    setPredictWidth(width)
+    setPredictWidth(width);
     var left;
     if (lastNum < predictNum) {
       left = lastNum * 20 + 10;
     } else {
       left = predictNum * 20 + 10;
     }
-    setPredictLeft(left)
-    
+    setPredictLeft(left);
 
     //开始画线
-    let cnv = document.getElementById('predict-canvas');
+    let cnv = document.getElementById("predict-canvas");
     let cxt = cnv.getContext("2d");
-    cxt.imageSmoothingEnabled = true
+    cxt.imageSmoothingEnabled = true;
     cxt.clearRect(0, 0, 640, 20);
     setTimeout(() => {
       cxt.beginPath();
@@ -157,8 +145,6 @@ function TwoColor() {
       cxt.stroke();
     }, 500);
   };
-
-
 
   //开始画线
   // let cnv = document.getElementById('predict-canvas5');
@@ -177,33 +163,32 @@ function TwoColor() {
   //   cxt.stroke();
   // }, 500);
 
+  const [num, setNum] = useState("");
 
-
-  const [num, setNum] = useState('');
-
-  const [predictWidth, setPredictWidth] = useState('');
-  const [predictLeft, setPredictLeft] = useState('');
+  const [predictWidth, setPredictWidth] = useState("");
+  const [predictLeft, setPredictLeft] = useState("");
 
   const makeNum = (predictNum) => {
-
     setNum(predictNum);
     // setCol([...col, c]);
-    predictDraw(predictNum, oneRef.current)
+    predictDraw(predictNum, oneRef.current);
   };
-
 
   return (
     <div className="h-full w-full bg-zinc-200">
+      <div className=" flex justify-center items-center">
+        {Array.from(new Array(7), (v, i) => {
+          return (
+            <button className="bg-zinc-200 p-2 rounded-md border-[1px] border-x-blue-300">{i + 1}</button>
+          );
+        })}
+      </div>
       <div className="w-fit h-fit flex mx-auto p-10 bg-zinc-200">
         <div className="relative">
           {one.map((item, index) => {
             return <Row num={item} bgColor="#991b1b" key={index} />;
           })}
-          <PredictRow
-            num={num}
-            bgColor={colors[0]}
-            makeNum={makeNum}
-          />
+          <PredictRow num={num} bgColor={colors[0]} makeNum={makeNum} />
           <canvas
             id="predict-canvas"
             width={predictWidth}
@@ -218,8 +203,8 @@ function TwoColor() {
           ></canvas>
           <canvas
             id="canvas"
-            width='640'
-            height='600'
+            width="640"
+            height="600"
             color="#111"
             style={{
               position: "absolute",
@@ -232,5 +217,5 @@ function TwoColor() {
       </div>
     </div>
   );
-};
+}
 export default TwoColor;
