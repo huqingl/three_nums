@@ -348,92 +348,94 @@ function App() {
   }
   return (
     <div className="h-full w-full bg-zinc-200">
-      <div><a href="/TwoColor">two color</a></div>
-      <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? 'hidden' : ''}`}>
-        {allData.map((i, k) => {
-          return (
-            <div className="relative" key={k}>
-              {i.map((item, index) => {
-                return <Row num={item} bgColor={colors[k]} key={index} />;
-              })}
-              <PredictRow
-                num={nums[k]}
-                bgColor={colors[k]}
-                makeNum={makeNum}
-                cols={k}
-                currentCol={col.indexOf(k) !== -1}
-              />
-              <canvas
-                // id="predict-canvas"
-                id={`predict-canvas${k}`}
-                width={predictWidth[k]}
-                height={20}
-                color="#111"
-                style={{
-                  position: "absolute",
-                  top: i.length * 20 - 10,
-                  left: predictLeft[k],
-                  zIndex: 2,
-                  // border: "1px dashed #111",
-                }}
-              ></canvas>
-              <canvas
-                id={`canvas${k}`}
-                width='200'
-                height='600'
-                color="#111"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  zIndex: 2,
-                  // border: "1px dashed #111",
-                }}
-              ></canvas>
-            </div>
-          );
-        })}
-
-      </div>
-      <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
-        <div className="relative">
-          {sumData.map((item, index) => {
-            return <SumRow num={item} bgColor={'#834987'} key={index} />;
+      <div className="flex flex-col pt-10">
+        <div className="mx-auto p-4"><a href="#/TwoColor"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">two color</button></a></div>
+        <div className={`w-fit h-fit flex mx-auto p-2 bg-zinc-200 ${show ? 'hidden' : ''}`}>
+          {allData.map((i, k) => {
+            return (
+              <div className="relative" key={k}>
+                {i.map((item, index) => {
+                  return <Row num={item} bgColor={colors[k]} key={index} />;
+                })}
+                <PredictRow
+                  num={nums[k]}
+                  bgColor={colors[k]}
+                  makeNum={makeNum}
+                  cols={k}
+                  currentCol={col.indexOf(k) !== -1}
+                />
+                <canvas
+                  // id="predict-canvas"
+                  id={`predict-canvas${k}`}
+                  width={predictWidth[k]}
+                  height={20}
+                  color="#111"
+                  style={{
+                    position: "absolute",
+                    top: i.length * 20 - 10,
+                    left: predictLeft[k],
+                    zIndex: 2,
+                    // border: "1px dashed #111",
+                  }}
+                ></canvas>
+                <canvas
+                  id={`canvas${k}`}
+                  width='200'
+                  height='600'
+                  color="#111"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    zIndex: 2,
+                    // border: "1px dashed #111",
+                  }}
+                ></canvas>
+              </div>
+            );
           })}
-          <SumPredictRow
-            num={sumNum}
-            bgColor={'#86198f'}
-            makeNum={makeSumNum}
-          />
-          <canvas
-            id="predict-canvas5"
-            width={sumPredictWidth}
-            height={20}
-            color="#111"
-            style={{
-              position: "absolute",
-              top: sumData.length * 20 - 10,
-              left: sumPredictLeft,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
-          <canvas
-            id="canvas5"
-            width='560'
-            height='600'
-            color="#111"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 2,
-              // border: "1px dashed #111",
-            }}
-          ></canvas>
+
+        </div>
+        <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
+          <div className="relative">
+            {sumData.map((item, index) => {
+              return <SumRow num={item} bgColor={'#834987'} key={index} />;
+            })}
+            <SumPredictRow
+              num={sumNum}
+              bgColor={'#86198f'}
+              makeNum={makeSumNum}
+            />
+            <canvas
+              id="predict-canvas5"
+              width={sumPredictWidth}
+              height={20}
+              color="#111"
+              style={{
+                position: "absolute",
+                top: sumData.length * 20 - 10,
+                left: sumPredictLeft,
+                zIndex: 2,
+                // border: "1px dashed #111",
+              }}
+            ></canvas>
+            <canvas
+              id="canvas5"
+              width='560'
+              height='600'
+              color="#111"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 2,
+                // border: "1px dashed #111",
+              }}
+            ></canvas>
+          </div>
         </div>
       </div>
-      <div className="py-2 text-center"><button className="ml-20 p-2 bg-slate-300 rounded " onClick={toggle}>{show?'综合':'和'}</button></div>
+      <div className="py-2 text-center"><button className="ml-20 p-2 bg-slate-300 rounded " onClick={toggle}>{show ? '综合' : '和'}</button></div>
     </div>
   );
 }

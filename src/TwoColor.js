@@ -1,6 +1,6 @@
 import "./App.css";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 function Square({ dataHasNum, children }) {
   return (
     <div
@@ -46,7 +46,7 @@ function Row({ num, bgColor }) {
   return (
     <div className="row mr-2">
       <div className="flex">
-        {Array.from(new Array(33), (v, i) => {
+        {Array.from(new Array(34), (v, i) => {
           const el = i === num ? <Number num={i} bgColor={bgColor} /> : "";
           return <Square key={i} dataHasNum={i} children={el} />;
         })}
@@ -58,7 +58,7 @@ function PredictRow({ num, bgColor, makeNum }) {
   return (
     <div className="row mr-2">
       <div className="flex">
-        {Array.from(new Array(33), (v, i) => {
+        {Array.from(new Array(34), (v, i) => {
           const el =
             i === num ? (
               <Number num={num} bgColor={bgColor} />
@@ -82,7 +82,6 @@ function PredictRow({ num, bgColor, makeNum }) {
 
 function TwoColor() {
   const [one, setOne] = useState([]);
-  var oneRef = useRef();
 
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
@@ -92,16 +91,28 @@ function TwoColor() {
       tempData.forEach((item) => {
         one.push(parseInt(item));
       });
-      oneRef.current = one;
+      // oneRef.current = one;
       setOne(one);
+      setTimeout(() => {
+        Draw(one);
+      }, 3000);
     });
 
   }, []);
 
+  const clearRect = () => {
+    let cnv = document.getElementById("canvas");
+    let cnv1 = document.getElementById("predict-canvas");
+    let cxt = cnv.getContext("2d");
+    let cxt1 = cnv1.getContext("2d");
+    cxt.clearRect(0, 0, 680, 600);
+    cxt1.clearRect(0, 0, 680, 20);
+  };
   const Draw = (data) => {
     // console.log(data)
     let cnv = document.getElementById("canvas");
     let cxt = cnv.getContext("2d");
+    cxt.imageSmoothingEnabled = true
     cxt.beginPath();
     let startNum = data[0];
     let startX = startNum * 20 + 10;
@@ -116,16 +127,11 @@ function TwoColor() {
     });
     cxt.stroke();
   };
-  useEffect(() => {
-    setTimeout(() => {
-      // const onelenth = oneRef.current.length;
-      // const onewidth = 20 * 10;
-      // const oneheight = 20 * onelenth;
-      // setOneWidth(onewidth);
-      // setOneHeight(oneheight);
-      Draw(oneRef.current);
-    }, 2000);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     Draw(one);
+  //   }, 2000);
+  // });
   const predictDraw = (predictNum, data) => {
     //设置连接线所在canvas画布的宽度
     let lastNum = data[data.length - 1];
@@ -138,13 +144,12 @@ function TwoColor() {
       left = predictNum * 20 + 10;
     }
     setPredictLeft(left)
-    
 
     //开始画线
     let cnv = document.getElementById('predict-canvas');
     let cxt = cnv.getContext("2d");
     cxt.imageSmoothingEnabled = true
-    cxt.clearRect(0, 0, 640, 20);
+    cxt.clearRect(0, 0, 680, 20);
     setTimeout(() => {
       cxt.beginPath();
       if (lastNum < predictNum) {
@@ -188,13 +193,38 @@ function TwoColor() {
 
     setNum(predictNum);
     // setCol([...col, c]);
-    predictDraw(predictNum, oneRef.current)
+    predictDraw(predictNum, one)
   };
+
+  const selectNum = (i) => {
+    clearRect();
+    makeNum(0);
+    axios.get(`http://yuduntech.com:8070/d/houtai/get_two_color.php?num=${i}`).then((res) => {
+      let one = [];
+      let tempData = res.data;
+      tempData.forEach((item) => {
+        one.push(parseInt(item));
+      });
+      setOne(one);
+      setTimeout(() => {
+        Draw(one);
+      }, 2000);
+    });
+  }
 
 
   return (
     <div className="h-full w-full bg-zinc-200">
-      <div className="w-fit h-fit flex mx-auto p-10 bg-zinc-200">
+      <div className="w-fit h-fit mx-auto p-10 bg-zinc-200">
+        <div className="mb-4">
+          <a href="/"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">to three nums</button></a>
+          {
+          Array.from(new Array(7), (v, i) => {
+            return (
+              <button className="border-[1px] border-black py-1 px-4 ml-2 rounded" onClick={() => selectNum(i)}>{i + 1}</button>
+            );
+          })
+        }</div>
         <div className="relative">
           {one.map((item, index) => {
             return <Row num={item} bgColor="#991b1b" key={index} />;
@@ -218,7 +248,7 @@ function TwoColor() {
           ></canvas>
           <canvas
             id="canvas"
-            width='640'
+            width='680'
             height='600'
             color="#111"
             style={{

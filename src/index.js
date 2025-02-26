@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import TwoColor from './TwoColor';
 // import reportWebVitals from './reportWebVitals';
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <App />,
@@ -18,10 +18,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider future={{
-      v7_startTransition: true,
-      v7_relativeSplatPath: true,
-    }} router={router} />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
