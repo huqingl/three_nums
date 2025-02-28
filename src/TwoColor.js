@@ -92,11 +92,11 @@ function TwoColor() {
           one.push(parseInt(item));
         });
         setOne(one);
+        setTimeout(() => {
+          Draw(one);
+        }, 3000);
       });
-    setTimeout(() => {
-      Draw(one);
-    }, 3000);
-  },[]);
+  }, []);
 
 
 
@@ -212,7 +212,7 @@ function TwoColor() {
           {
             Array.from(new Array(7), (v, i) => {
               return (
-                <button className="border-[1px] border-black py-1 px-4 ml-2 rounded" onClick={() => selectNum(i)}>{i + 1}</button>
+                <button key={i} className="border-[1px] border-black py-1 px-4 ml-2 rounded" onClick={() => selectNum(i)}>{i + 1}</button>
               );
             })
           }</div>

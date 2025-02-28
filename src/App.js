@@ -200,16 +200,9 @@ function App() {
       // if (!ignore) {
       setAllData([one, two, three, sumEnd, sumDiff]);
       setSumData(sums)
-      // }
-      // console.log(allData);
     });
-    // return () => {
-    //   ignore = true;
-    // }
-    // }
   }, []);
-  // const [oneWidth, setOneWidth] = useState(0);
-  // const [oneHeight, setOneHeight] = useState(0);
+
 
   const Draw = (data, id) => {
     // console.log(data)
