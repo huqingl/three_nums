@@ -79,26 +79,26 @@ function PredictRow({ num, bgColor, makeNum }) {
   );
 }
 
-
 function TwoColor() {
   const [one, setOne] = useState([]);
-
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
-    axios.get("http://yuduntech.com:8070/d/houtai/get_two_color.php?num=0").then((res) => {
-      let one = [];
-      let tempData = res.data;
-      tempData.forEach((item) => {
-        one.push(parseInt(item));
+    axios
+      .get("http://yuduntech.com:8070/d/houtai/get_two_color.php?num=0")
+      .then((res) => {
+        let one = [];
+        let tempData = res.data;
+        tempData.forEach((item) => {
+          one.push(parseInt(item));
+        });
+        setOne(one);
       });
-      // oneRef.current = one;
-      setOne(one);
-      setTimeout(() => {
-        Draw(one);
-      }, 3000);
-    });
+    setTimeout(() => {
+      Draw(one);
+    }, 3000);
+  },[]);
 
-  }, []);
+
 
   const clearRect = () => {
     let cnv = document.getElementById("canvas");
@@ -127,16 +127,12 @@ function TwoColor() {
     });
     cxt.stroke();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     Draw(one);
-  //   }, 2000);
-  // });
+
   const predictDraw = (predictNum, data) => {
-    //设置连接线所在canvas画布的宽度
     let lastNum = data[data.length - 1];
+    //设置连接线所在canvas画布的宽度
     let width = Math.abs(lastNum - predictNum) * 20;
-    setPredictWidth(width)
+    setPredictWidth(width);
     var left;
     if (lastNum < predictNum) {
       left = lastNum * 20 + 10;
@@ -146,7 +142,7 @@ function TwoColor() {
     setPredictLeft(left)
 
     //开始画线
-    let cnv = document.getElementById('predict-canvas');
+    let cnv = document.getElementById("predict-canvas");
     let cxt = cnv.getContext("2d");
     cxt.imageSmoothingEnabled = true
     cxt.clearRect(0, 0, 680, 20);
@@ -162,8 +158,6 @@ function TwoColor() {
       cxt.stroke();
     }, 500);
   };
-
-
 
   //开始画线
   // let cnv = document.getElementById('predict-canvas5');
@@ -182,15 +176,12 @@ function TwoColor() {
   //   cxt.stroke();
   // }, 500);
 
+  const [num, setNum] = useState(null);
 
-
-  const [num, setNum] = useState('');
-
-  const [predictWidth, setPredictWidth] = useState('');
-  const [predictLeft, setPredictLeft] = useState('');
+  const [predictWidth, setPredictWidth] = useState("");
+  const [predictLeft, setPredictLeft] = useState("");
 
   const makeNum = (predictNum) => {
-
     setNum(predictNum);
     // setCol([...col, c]);
     predictDraw(predictNum, one)
@@ -219,21 +210,17 @@ function TwoColor() {
         <div className="mb-4">
           <a href="#/"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">to three nums</button></a>
           {
-          Array.from(new Array(7), (v, i) => {
-            return (
-              <button className="border-[1px] border-black py-1 px-4 ml-2 rounded" onClick={() => selectNum(i)}>{i + 1}</button>
-            );
-          })
-        }</div>
+            Array.from(new Array(7), (v, i) => {
+              return (
+                <button className="border-[1px] border-black py-1 px-4 ml-2 rounded" onClick={() => selectNum(i)}>{i + 1}</button>
+              );
+            })
+          }</div>
         <div className="relative">
           {one.map((item, index) => {
             return <Row num={item} bgColor="#991b1b" key={index} />;
           })}
-          <PredictRow
-            num={num}
-            bgColor={colors[0]}
-            makeNum={makeNum}
-          />
+          <PredictRow num={num} bgColor={colors[0]} makeNum={makeNum} />
           <canvas
             id="predict-canvas"
             width={predictWidth}
@@ -262,5 +249,5 @@ function TwoColor() {
       </div>
     </div>
   );
-};
+}
 export default TwoColor;
