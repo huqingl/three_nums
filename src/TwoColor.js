@@ -198,7 +198,7 @@ function TwoColor() {
 
   const selectNum = (i) => {
     clearRect();
-    makeNum(0);
+    setNum(99)
     axios.get(`http://yuduntech.com:8070/d/houtai/get_two_color.php?num=${i}`).then((res) => {
       let one = [];
       let tempData = res.data;
@@ -217,7 +217,7 @@ function TwoColor() {
     <div className="h-full w-full bg-zinc-200">
       <div className="w-fit h-fit mx-auto p-10 bg-zinc-200">
         <div className="mb-4">
-          <a href="/"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">to three nums</button></a>
+          <a href="#/"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">to three nums</button></a>
           {
           Array.from(new Array(7), (v, i) => {
             return (

@@ -396,7 +396,7 @@ function App() {
           })}
 
         </div>
-        <div className={`w-fit h-fit flex mx-auto p-10 bg-zinc-200 ${show ? '' : 'hidden'}`}>
+        <div className={`w-fit h-fit flex mx-auto p-2 bg-zinc-200 ${show ? '' : 'hidden'}`}>
           <div className="relative">
             {sumData.map((item, index) => {
               return <SumRow num={item} bgColor={'#834987'} key={index} />;
