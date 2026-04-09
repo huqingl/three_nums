@@ -146,7 +146,7 @@ function App() {
   // var prev = "000";
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
-    axios.get("http://yuduntech.com:8070/d/houtai/get_history.php").then((res) => {
+    axios.get("http://101.132.159.219:8070/d/houtai/get_history.php").then((res) => {
       let prev = res.data[0];
       let one = [],
         two = [],

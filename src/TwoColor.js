@@ -84,7 +84,7 @@ function TwoColor() {
   const colors = ["#991b1b", "#0284c7", "#166534", "#a16207", "#155e75"];
   useEffect(() => {
     axios
-      .get("http://yuduntech.com:8070/d/houtai/get_two_color.php?num=0")
+      .get("http://101.132.159.219:8070/d/houtai/get_two_color.php?num=0")
       .then((res) => {
         let one = [];
         let tempData = res.data;
@@ -190,7 +190,7 @@ function TwoColor() {
   const selectNum = (i) => {
     clearRect();
     setNum(99)
-    axios.get(`http://yuduntech.com:8070/d/houtai/get_two_color.php?num=${i}`).then((res) => {
+    axios.get(`http://101.132.159.219:8070/d/houtai/get_two_color.php?num=${i}`).then((res) => {
       let one = [];
       let tempData = res.data;
       tempData.forEach((item) => {
@@ -208,7 +208,7 @@ function TwoColor() {
     <div className="h-full w-full bg-zinc-200">
       <div className="w-fit h-fit mx-auto p-10 bg-zinc-200">
         <div className="mb-4">
-          <a href="#/"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">to three nums</button></a>
+          <a href="#/ThreeNums"><button className="border-[1px] border-black py-1 px-4 ml-2 rounded">three nums</button></a>
           {
             Array.from(new Array(7), (v, i) => {
               return (

@@ -4,10 +4,15 @@ import { createHashRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import TwoColor from './TwoColor';
+import Login from './Login';
 // import reportWebVitals from './reportWebVitals';
 const router = createHashRouter([
   {
     path: "/",
+    element: <Login />,
+  },
+  {
+    path: "/ThreeNums",
     element: <App />,
   },
   {
